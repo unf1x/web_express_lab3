@@ -25,7 +25,7 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
   app.options('*', (req, res) => res.sendStatus(200));
 
   app.get('/login/', (req, res) => {
-    res.send('itmo367916');
+    res.send('maxim_borovskiy');
   });
 
     app.get('/code/', (req, res) => {
@@ -60,7 +60,7 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
   app.post('/req/', reqHandler);
 
   app.all('*', (req, res) => {
-    res.send('itmo367916');
+    res.send('maxim_borovskiy');
   });
 
   return app;
