@@ -11,26 +11,27 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
       'GET,POST,PUT,PATCH,OPTIONS,DELETE'
     );
 
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
+
     if (!req.path.endsWith('/')) {
       const query = req.url.includes('?')
         ? req.url.substring(req.url.indexOf('?'))
         : '';
-
-      return res.redirect(301, `${req.path}/${query}`);
+      return res.redirect(301, req.path + '/' + query);
     }
 
     next();
   });
 
-  app.options('*', (req, res) => res.sendStatus(200));
-
   app.get('/login/', (req, res) => {
     res.send('maxim_borovskiy');
   });
 
-    app.get('/code/', (req, res) => {
-      createReadStream(new URL(import.meta.url)).pipe(res);
-    });
+  app.get('/code/', (req, res) => {
+    createReadStream(new URL(import.meta.url)).pipe(res);
+  });
 
   app.get('/sha1/:input/', (req, res) => {
     res.send(
@@ -43,6 +44,8 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
       ? req.body.addr
       : req.query.addr;
 
+    if (!addr) return res.send('');
+
     http.get(addr, response => {
       let data = '';
 
@@ -53,6 +56,9 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
       response.on('end', () => {
         res.send(data);
       });
+
+    }).on('error', () => {
+      res.status(500).send('error');
     });
   };
 
