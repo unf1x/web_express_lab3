@@ -6,10 +6,7 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
 
   app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
-      'Access-Control-Allow-Methods',
-      'GET,POST,PUT,PATCH,OPTIONS,DELETE'
-    );
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,OPTIONS,DELETE');
 
     if (req.method === 'OPTIONS') {
       return res.sendStatus(200);
@@ -17,16 +14,14 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
 
     next();
   });
-  app.get('/', (req, res) => {
-    res.send('maxim_borovskiy');
-  });
 
   app.get('/login/', (req, res) => {
+    res.type('text/plain');
     res.send('maxim_borovskiy');
   });
 
   app.get('/code/', (req, res) => {
-    createReadStream(new URL(import.meta.url)).pipe(res);
+    createReadStream(new URL(import.meta.url).pathname).pipe(res);
   });
 
   app.get('/sha1/:input/', (req, res) => {
@@ -37,7 +32,6 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
 
   app.get('/req/', (req, res) => {
     const addr = req.query.addr;
-
     if (!addr) return res.send('');
 
     http.get(addr, response => {
@@ -50,7 +44,6 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
       response.on('end', () => {
         res.send(data);
       });
-
     }).on('error', () => {
       res.status(500).send('error');
     });
@@ -58,7 +51,6 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
 
   app.post('/req/', (req, res) => {
     const addr = req.body.addr;
-
     if (!addr) return res.send('');
 
     http.get(addr, response => {
@@ -71,7 +63,6 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
       response.on('end', () => {
         res.send(data);
       });
-
     }).on('error', () => {
       res.status(500).send('error');
     });
