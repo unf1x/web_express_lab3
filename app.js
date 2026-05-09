@@ -15,13 +15,6 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
       return res.sendStatus(200);
     }
 
-    if (!req.path.endsWith('/')) {
-      const query = req.url.includes('?')
-        ? req.url.substring(req.url.indexOf('?'))
-        : '';
-      return res.redirect(301, req.path + '/' + query);
-    }
-
     next();
   });
 
@@ -39,10 +32,8 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
     );
   });
 
-  const reqHandler = (req, res) => {
-    const addr = req.method === 'POST'
-      ? req.body.addr
-      : req.query.addr;
+  app.get('/req/', (req, res) => {
+    const addr = req.query.addr;
 
     if (!addr) return res.send('');
 
@@ -60,10 +51,28 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
     }).on('error', () => {
       res.status(500).send('error');
     });
-  };
+  });
 
-  app.get('/req/', reqHandler);
-  app.post('/req/', reqHandler);
+  app.post('/req/', (req, res) => {
+    const addr = req.body.addr;
+
+    if (!addr) return res.send('');
+
+    http.get(addr, response => {
+      let data = '';
+
+      response.on('data', chunk => {
+        data += chunk;
+      });
+
+      response.on('end', () => {
+        res.send(data);
+      });
+
+    }).on('error', () => {
+      res.status(500).send('error');
+    });
+  });
 
   app.all('*', (req, res) => {
     res.send('maxim_borovskiy');
