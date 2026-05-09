@@ -17,6 +17,9 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
 
     next();
   });
+  app.get('/', (req, res) => {
+    res.send('maxim_borovskiy');
+  });
 
   app.get('/login/', (req, res) => {
     res.send('maxim_borovskiy');
