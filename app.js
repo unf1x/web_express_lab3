@@ -5,25 +5,22 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
   app.use(bodyParser.json());
 
   app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header(
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
       'Access-Control-Allow-Methods',
       'GET,POST,PUT,PATCH,OPTIONS,DELETE'
     );
-    res.header('Access-Control-Allow-Headers', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
 
-    next();
-  });
-
-  app.options('*', (req, res) => {
-    res.sendStatus(200);
-  });
+    if (req.method === 'OPTIONS') {
+      return res.sendStatus(200);
+    }
 
     next();
   });
 
   app.get('/login/', (req, res) => {
-    res.send('TEST123');;
+    res.send('maxim_borovskiy');
   });
 
   app.get('/code/', (req, res) => {
