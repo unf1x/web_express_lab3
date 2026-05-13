@@ -5,16 +5,19 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
   app.use(bodyParser.json());
 
   app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader(
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header(
       'Access-Control-Allow-Methods',
       'GET,POST,PUT,PATCH,OPTIONS,DELETE'
     );
-    res.setHeader('Access-Control-Allow-Headers', '*');
+    res.header('Access-Control-Allow-Headers', '*');
 
-    if (req.method === 'OPTIONS') {
-      return res.sendStatus(200);
-    }
+    next();
+  });
+
+  app.options('*', (req, res) => {
+    res.sendStatus(200);
+  });
 
     next();
   });
