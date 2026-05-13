@@ -23,7 +23,7 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
   });
 
   app.get('/login/', (req, res) => {
-    res.send('maxim_borovskiy');
+    res.send('TEST123');;
   });
 
   app.get('/code/', (req, res) => {
