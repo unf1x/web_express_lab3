@@ -20,7 +20,6 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
   });
 
   app.get('/login/', (req, res) => {
-    res.type('text/plain');
     res.send('maxim_borovskiy');
   });
 
@@ -34,8 +33,7 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
     );
   });
 
-  app.get('/req/', (req, res) => {
-    const addr = req.query.addr;
+  const requestHandler = (addr, res) => {
     if (!addr) return res.send('');
 
     http.get(addr, response => {
@@ -51,25 +49,14 @@ export default (express, bodyParser, createReadStream, crypto, http) => {
     }).on('error', () => {
       res.status(500).send('error');
     });
+  };
+
+  app.get('/req/', (req, res) => {
+    requestHandler(req.query.addr, res);
   });
 
   app.post('/req/', (req, res) => {
-    const addr = req.body.addr;
-    if (!addr) return res.send('');
-
-    http.get(addr, response => {
-      let data = '';
-
-      response.on('data', chunk => {
-        data += chunk;
-      });
-
-      response.on('end', () => {
-        res.send(data);
-      });
-    }).on('error', () => {
-      res.status(500).send('error');
-    });
+    requestHandler(req.body.addr, res);
   });
 
   app.all('*', (req, res) => {
